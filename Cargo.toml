@@ -1,0 +1,9 @@
+[package]
+name = "heyserv"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+russh = { version = "0.63", features = ["aws-lc-rs"] }
+tokio = { version = "1", features = ["full"] }
+anyhow = "1"
