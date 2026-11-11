@@ -7,3 +7,5 @@ edition = "2024"
 russh = { version = "0.63", features = ["aws-lc-rs"] }
 tokio = { version = "1", features = ["full"] }
 anyhow = "1"
+serde = { version = "1", features = ["derive"] }
+toml = "0.8"
