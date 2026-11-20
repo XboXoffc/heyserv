@@ -6,6 +6,9 @@ use russh::keys::PublicKeyOrCertificate;
 use serde::{Deserialize};
 use toml;
 use std::fs;
+use clap::Parser;
+
+const CONFIG_PATH:&str = "config.toml";
 
 struct Client;
 
@@ -46,17 +49,32 @@ struct Config{
     ping:PingConfig,
 }
 
+#[derive(Parser, Debug)]
+#[command(version, long_about = None)]
+struct Args{
+    #[arg(short('H'), long)]
+    host: Option<String>,
+
+    #[arg(short, long)]
+    port: Option<u16>,
+
+    #[arg(short, long)]
+    username: Option<String>,
+
+    #[arg(short('P'), long)]
+    password: Option<String>,
+}
 
 
 #[tokio::main]
 async fn main() -> Result<()> {
-    let config = load_config("config.toml").await?;
+    let config = load_config(CONFIG_PATH).await?;
 
-    let host: String = config.server.host;
-    let port:u16 = config.server.port;
-    let username: String = config.server.username;
-    let password: String = config.server.password;
-    
+    let args: Args = Args::parse();
+    let host = args.host.unwrap_or(config.server.host);
+    let port = args.port.unwrap_or(config.server.port);
+    let username = args.username.unwrap_or(config.server.username);
+    let password = args.password.unwrap_or(config.server.password);
 
     Ok(ssh_exec(&host, &port, &username, &password).await?)
 }
